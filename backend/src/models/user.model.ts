@@ -24,6 +24,15 @@ const userScheam = new mongoose.Schema(
       required: false,
       default: "",
     },
+    stripeCustomerId: {
+      type: String,
+      required: false,
+    },
+    subscription: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Subscription",
+      required: true,
+    },
   },
   { timestamps: true }
 );

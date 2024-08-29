@@ -4,6 +4,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import catchAsyncError from "../middlewares/catchAsyncErrors";
 import Authentication from "../models/auth.model";
 
+import Plan from "../models/plan.model";
 import User from "../models/user.model";
 import { createAcessToken, createRefreshToken } from "../utils/jwtToken";
 import sendMessage from "../utils/sendMessage";
@@ -32,9 +33,14 @@ export const createUserController = catchAsyncError(async (req, res) => {
   }
 
   const { email, password } = body;
+  const basicPlan = await Plan.findOne({ name: "Free Trial" });
   const auth = await Authentication.create({ email, password });
 
-  const user = await User.create({ ...body, auth: auth._id });
+  const user = await User.create({
+    ...body,
+    auth: auth._id,
+    subscription: basicPlan?._id || "",
+  });
 
   const token = createAcessToken(
     {
